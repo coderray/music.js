@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>音乐组件</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<style type="text/css">
+			#test1,#test2{
+				margin: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<!--此处是正文-->
+		<div ><button id="test1">播放音效1</button></div>
+		<div ><button id="test2">播放音效2</button></div>
+	</body>
+	<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+	<script src="js/music-2.0.js"></script>
+	<script type="text/javascript">
+		/*
+		 * music.js v2.0系基于微信weixin-1.0.0.js，用于引入背景音乐及创建audio音效的一个js组件
+		 * 本组件暴露Music()全局构造函数，并符合AMD规范
+		 * 2016.9.22
+		 * Ray
+		 */
+		//调用示例	
+		wx.config({
+		    debug: true
+		});
+		//为确保声音正常播放，请于wx.ready()内创建音乐实例
+		wx.ready(function(){
+			
+			//初始化Music实例
+			var music = new Music(),
+				baseURL = "images/";
+			
+			//统一设置所有音频路径
+			music.URL = baseURL;
+			
+			/*
+			 *	创建背景音乐及按钮
+			 */
+			
+			//方法一：
+			music.bgMusic();
+			
+			
+			//方法二：
+			music.bgMusic({
+				/*
+				 * 播放方式，默认自动播放,不旋转
+				 */
+				loop:true,//boolean,true为循环播放，反之为false，默认循环播放
+				rotate:false,//boolean,true为旋转，反之为false，默认不旋转
+				auto:false,//boolean,true为为自动播放，反之为false，默认自动播放
+				
+				/*
+				 * 按钮大小，默认2rem
+				 */			
+				width:"2rem",//String,按钮宽度，默认2rem
+				height:"2rem",//String,按钮高度，默认2rem
+				
+				/*
+				 * 按钮位置，默认在右上角
+				 */
+				left:"auto",//String,绝对定位left值，默认auto	
+				top:"4rem",//String,绝对定位left值，默认2rem	
+				right:"4rem",//String,绝对定位left值，默认2rem	
+				bottom:"auto",//String,绝对定位left值，默认auto
+				
+				/*
+				 * 路径名字，默认在右上角
+				 */
+				url:"images/",//String,音乐资源地址，默认images/
+				name:"music.mp3"//String,背景音乐文件名，默认为music.mp3
+			});
+			
+			
+			/*
+			 * 创建audio音效实例
+			 */
+			
+			//用法一:
+			
+			//直接赋值文件名或者完整路径均可，即baseURL + "hit.mp3"或直接写"hit.mp3"均可。
+			var hit = music.sound("hit.mp3");
+			
+			document.getElementById("test1").addEventListener("click",function(){
+				//在需要的地方调用hit.play()即可播放
+				hit.play();
+			});
+			
+			//用法二：配置json参数
+			var hurt = music.sound({
+				'name':'hurt.mp3',//文件名,必须
+				'url':baseURL,//路径前缀,如果music.URL已统一设置地址，此处可省略
+				'auto':true,//是否自动播放
+				'loop':false//是否循环
+			});
+			document.getElementById("test2").addEventListener("click",function(){
+				hurt.play();
+			});
+			
+			/*
+			 * 动态拓展music方法
+			 */
+		}); 
+	</script>
+</html>
