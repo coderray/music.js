@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>音乐组件</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<style type="text/css">
+			#test1,#test2{
+				margin: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<!--此处是正文-->
+		<div ><button id="test1">播放音效1</button></div>
+		<div ><button id="test2">播放音效2</button></div>
+	</body>
+	<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+	<script src="js/music.js"></script>
+	<script type="text/javascript">
+		/*
+		 * music.js系基于微信weixin-1.0.0.js，用于引入背景音乐的一个js组件
+		 * 本组件暴露initMusic()全局方法
+		 * 2016.7.25
+		 * Ray
+		 */
+		//调用示例	
+		wx.config({
+		    debug: true
+		});
+		//initMusic依赖于wx.ready()
+		wx.ready(function(){
+			//initMusic方法的唯一参数为Object，不填参数时自动选择默认配置参数，直接执行initMusic()即可
+			initMusic({
+				/*
+				 * 播放方式，默认自动播放,不旋转
+				 */
+				loop:true,//boolean,true为循环播放，反之为false，默认循环播放
+				rotate:false,//boolean,true为旋转，反之为false，默认不旋转
+				auto:false,//boolean,true为为自动播放，反之为false，默认自动播放
+				
+				/*
+				 * 按钮大小，默认2rem
+				 */			
+				width:"2rem",//String,按钮宽度，默认2rem
+				height:"2rem",//String,按钮高度，默认2rem
+				
+				/*
+				 * 按钮位置，默认在右上角
+				 */
+				left:"auto",//String,绝对定位left值，默认auto	
+				top:"2rem",//String,绝对定位left值，默认2rem	
+				right:"2rem",//String,绝对定位left值，默认2rem	
+				bottom:"auto",//String,绝对定位left值，默认auto
+				
+				/*
+				 * 路径名字，默认在右上角
+				 */
+				url:"images/",//String,音乐资源地址，默认images/
+				name:"music.mp3"//String,背景音乐文件名，默认为music.mp3
+			});
+			/*
+			 * 创建audio音效实例
+			 * Sound()是全局的函数，用于创建一个audio音效，仅依赖于music.js，可不写在wx.ready内，在music.js之后实例化即可
+			 * 2016.9.21
+			 * Ray
+			 */
+			//用法一,直接赋值完整路径
+			var baseURL = "images/";
+			var hit = new Sound(baseURL + "hit.mp3");
+			//在需要的地方调用hit.play()即可播放
+			document.getElementById("test1").addEventListener("click",function(){
+				hit.play();
+			});
+			//用法二：配置json参数
+			var hurt = new Sound({
+				'name':'hurt.mp3',//文件名,必须
+				'url':baseURL,//路径前缀
+				'auto':true,//是否自动播放
+				'loop':false//是否循环
+			});
+			document.getElementById("test2").addEventListener("click",function(){
+				hurt.play();
+			});
+		}); 
+	</script>
+</html>
