@@ -8,8 +8,8 @@
   if (typeof exports === 'object') {
     module.exports = factory();
   } else if (typeof define === 'function' && define.amd) {
-    define('Music', [], function ($) {
-      return (root.Music = factory($));
+    define('Music', [], function (M) {
+      return (root.Music = factory(M));
     });
   } else {
     root.Music = factory();
@@ -20,6 +20,8 @@
 	function _music(){
 		this.Version = "2.0";
 		this.URL = "images/";
+		this.isPlaying = false;
+		this.setPlay = true;//是否设置播放
 	}
 	//用于拓展
 	_music.Fn = _music.prototype = {
@@ -62,11 +64,29 @@
 				if(music.paused){
 					music.play();
 					btn.className = isRotate ? "music-open music-rotate" : "music-open";
+					this.isPlaying = true;
+					this.setPlay = true;
 				}else{
 					music.pause();
 					btn.className = "music-paused";
+					this.isPlaying = false;
+					this.setPlay = false;
 				}
 			});
+			this.stop = function(){
+				if(!music.paused){
+					music.pause();
+					btn.className = "music-paused";
+					this.isPlaying = false;
+				}
+			}
+			this.play = function(){
+				if(music.paused){
+					music.play();
+					btn.className = isRotate ? "music-open music-rotate" : "music-open";
+					this.isPlaying = true;
+				}
+			}
 			//默认自动播放
 			if(def.loop){
 				music.setAttribute("loop","loop");
@@ -75,8 +95,11 @@
 			if(def.auto){
 				btn.className = "music-open";
 				music.play();
+				this.isPlaying = true;
+				this.setPlay = true;
 			}else{
 				btn.className = "music-paused";
+				this.isPlaying = false;
 			}
 			//是否旋转
 			if(def.rotate){
