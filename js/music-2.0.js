@@ -80,6 +80,7 @@
 					this.isPlaying = false;
 				}
 			}
+			this.bgBtn = btn;
 			this.play = function(){
 				if(music.paused){
 					music.play();
