@@ -37,7 +37,11 @@
 				"url":this.URL,
 				"name":"music.mp3",
 				"loop":true,
-				"auto":true
+				"auto":true,
+				'onImg':'btn_music.png',
+				'offImg':'btn_music_close.png',
+				'onClick':false,
+				'addClass':false
 			};
 			//复制配置
 			if(config){
@@ -58,26 +62,39 @@
 			wrap.className = "music-wrap";
 			wrap.appendChild(btn);
 			wrap.appendChild(music);
+			
+			//add class
+			if(def.addClass){
+				if(typeof def.addClass == 'string'){
+					def.addClass = ' ' + def.addClass + ' ';
+				}else if(def.addClass instanceof Array){
+					def.addClass = ' ' + def.addClass.join(' ') + ' ';
+				}
+			}
+			
 			//click
 			var isRotate = false;
 			btn.addEventListener("click",function(){
 				if(music.paused){
 					music.play();
 					btn.className = isRotate ? "music-open music-rotate" : "music-open";
+					btn.className += def.addClass ? def.addClass : '';
 					this.isPlaying = true;
 					this.setPlay = true;
 				}else{
 					music.pause();
-					btn.className = "music-paused";
+					btn.className = "music-paused" + (def.addClass ? def.addClass : '');
 					this.isPlaying = false;
 					this.setPlay = false;
 				}
+				typeof def.onClick == 'function' && def.onClick(this.isPlaying);
 			});
 			this.stop = function(){
 				if(!music.paused){
 					music.pause();
-					btn.className = "music-paused";
+					btn.className = "music-paused" + (def.addClass ? def.addClass : '');
 					this.isPlaying = false;
+					typeof def.onClick == 'function' && def.onClick(this.isPlaying);
 				}
 			}
 			this.bgBtn = btn;
@@ -85,7 +102,9 @@
 				if(music.paused){
 					music.play();
 					btn.className = isRotate ? "music-open music-rotate" : "music-open";
+					btn.className += def.addClass ? def.addClass : '';
 					this.isPlaying = true;
+					typeof def.onClick == 'function' && def.onClick(this.isPlaying);
 				}
 			}
 			//默认自动播放
@@ -94,21 +113,21 @@
 			}
 			//是否自动播放
 			if(def.auto){
-				btn.className = "music-open";
+				btn.className = "music-open" + (def.addClass ? def.addClass : '');
 				music.play();
 				this.isPlaying = true;
 				this.setPlay = true;
 			}else{
-				btn.className = "music-paused";
+				btn.className = "music-paused" + (def.addClass ? def.addClass : '');
 				this.isPlaying = false;
 			}
 			//是否旋转
 			if(def.rotate){
-				btn.className += " music-rotate"; 
+				btn.className += " music-rotate" + (def.addClass ? def.addClass : '');
 				isRotate = true;
 			}
 			//重设
-			styleT.innerHTML = ".music-wrap{position:absolute;width:1.6rem;height:1.6rem;z-index:999;right:2rem;top:2rem;}.music-wrap div{width:100%;height:100%;background-repeat:no-repeat;background-position:0 0;-webkit-background-size:100% 100%;background-size:100% 100%;}.music-rotate{animation:rotate 3s linear infinite;-webkit-animation: rotate 3s linear infinite;}.music-open{background-image:url(" + def.url +"btn_music.png);}.music-paused{animation-play-state:paused;-webkit-animation-play-state:paused;background-image:url(" + def.url + "btn_music_close.png) !important;}@keyframes rotate{from{transform: rotateZ(0deg);}to{transform: rotateZ(360deg);}}@-webkit-keyframes rotate{from{-webkit-transform: rotateZ(0deg);}to{-webkit-transform: rotateZ(360deg);}";
+			styleT.innerHTML = ".music-wrap{position:absolute;width:1.6rem;height:1.6rem;z-index:999;right:2rem;top:2rem;}.music-wrap div{width:100%;height:100%;background-repeat:no-repeat;background-position:0 0;-webkit-background-size:100% 100%;background-size:100% 100%;}.music-rotate{animation:rotate 3s linear infinite;-webkit-animation: rotate 3s linear infinite;}.music-open{background-image:url(" + def.url + def.onImg + ");}.music-paused{animation-play-state:paused;-webkit-animation-play-state:paused;background-image:url(" + def.url + def.offImg + ") !important;}@keyframes rotate{from{transform: rotateZ(0deg);}to{transform: rotateZ(360deg);}}@-webkit-keyframes rotate{from{-webkit-transform: rotateZ(0deg);}to{-webkit-transform: rotateZ(360deg);}";
 			var styleStr = 'width:' + def.width + ';height:' + def.height + ';right:' + def.right + ";top:" + def.top + ";left:" + def.left + ";bottom:" + def.bottom;
 			wrap.setAttribute("style",styleStr);
 			music.innerHTML = '<source src="' + (def.url + def.name) + '"></source>您的浏览器不支持Audio标签哦。';
